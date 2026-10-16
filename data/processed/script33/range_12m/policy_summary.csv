@@ -1,0 +1,4 @@
+policy,radio_range_m,trajectories,observed_crossing_events,connected_at_crossing,crossing_connectivity_pct,connectivity_availability_pct,simulated_outage_sec,simulated_outage_starts,total_dispatches,relays_deployed,deployed_per_dispatch_pct,placement_failures,arrivals_not_observed,arrival_before_crossing,arrival_after_crossing,false_alarms_complete_window,censored_dispatches
+fixed_lead,12.0,270,17568,17008,96.81238615664846,96.5903741472022,6147.993663549424,127,2915,2856,97.97598627787308,0,59,625,1825,304,161
+predictive,12.0,270,17568,17205,97.93374316939891,97.42845040468309,4636.834450483323,130,3434,3370,98.13628421665696,0,64,1080,1580,516,258
+reactive,12.0,270,17568,16789,95.5658014571949,94.67544939006764,9600.849132537842,146,2238,2213,98.88293118856122,0,25,0,2238,0,0

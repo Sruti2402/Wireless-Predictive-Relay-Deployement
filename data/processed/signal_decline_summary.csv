@@ -1,0 +1,8 @@
+recording_id,rows,duration_sec,valid_comparison_rows,joint_decline_rows,joint_decline_percent,feedback_events
+Dataset1,1689,342.33,1642,95,5.79,11
+Dataset2,6610,1487.27,6563,67,1.02,23
+Dataset3,1561,315.17,1514,89,5.88,10
+Dataset4,3225,648.76,3178,261,8.21,33
+Dataset5,2721,545.59,2674,208,7.78,21
+Dataset6,332,75.24,285,31,10.88,0
+Dataset7,371,74.48,324,48,14.81,1

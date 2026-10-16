@@ -1,0 +1,4 @@
+radio_range_m,predictive_connectivity_gain_pp,predictive_outage_reduction_pct,extra_predictive_dispatches,extra_predictive_false_alarms
+8.0,1.3888888888889,26.90445833435013,519.0,212.0
+10.0,2.1914845173041755,8.025936873816251,519.0,212.0
+12.0,1.1213570127504653,24.57971324898313,519.0,212.0

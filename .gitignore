@@ -1,0 +1,7 @@
+.venv/ 
+
+# Large generated relay-model CSV outputs
+/data/processed/script29/two_stage_oof_predictions.csv
+/data/processed/future_risk_labels_with_trends.csv
+/data/processed/script25/dispatch_training_data.csv
+/data/processed/script26/dispatch_oof_predictions.csv

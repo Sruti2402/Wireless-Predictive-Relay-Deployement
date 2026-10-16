@@ -1,0 +1,4 @@
+decision_cutoff,examples,actual_positive_rate,predicted_positive_rate,precision,recall,f1,average_precision,roc_auc,true_positive,false_positive,true_negative,false_negative,model,held_out_recording,train_rows_used,test_rows
+0.5,853524,0.010317225994816784,0.0,0.0,0.0,0.0,0.018800949011400708,0.684414565003952,0,0,844718,8806,HistGradientBoosting,ALL_OOF,,853524.0
+,853524,0.010317225994816784,0.0,0.0,0.0,0.0,,,0,0,844718,8806,AlwaysNegative,ALL_OOF,,
+0.5,853524,0.010317225994816784,0.22655953435404277,0.0,0.0,0.0,0.010317225994816784,0.385539316079449,0,193374,651344,8806,ReactiveThreshold,ALL_OOF,,853524.0

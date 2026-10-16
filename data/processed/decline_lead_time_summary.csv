@@ -1,0 +1,8 @@
+recording_id,rows,duration_sec,median_sample_interval_sec,smoothing_samples,lookback_samples,joint_decline_rows,joint_decline_episodes,eligible_random_controls,selected_random_controls
+Dataset1,1689,342.334,0.2058,24,24,95,12,820,100
+Dataset2,6640,1487.27,0.2064,24,24,70,6,5885,100
+Dataset3,1561,315.174,0.2058,24,24,89,11,885,100
+Dataset4,3228,648.763,0.206,24,24,261,15,1651,100
+Dataset5,2722,545.587,0.2058,24,24,208,16,1050,100
+Dataset6,351,75.236,0.206,24,24,40,4,0,0
+Dataset7,371,74.48,0.205,24,24,48,5,0,0

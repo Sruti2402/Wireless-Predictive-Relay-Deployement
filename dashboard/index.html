@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Predictive Relay Deployment Dashboard</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #07111f;
+  --panel: #101e31;
+  --border: #263b55;
+  --text: #e7f0ff;
+  --muted: #9fb2cc;
+  --accent: #55b8ff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.6 "Segoe UI", Arial, sans-serif;
+}
+header {
+  padding: 30px max(22px, calc((100% - 1400px)/2));
+  border-bottom: 1px solid var(--border);
+  background: #0a1728;
+}
+h1 { margin: 0 0 8px; font-size: clamp(24px, 4vw, 36px); }
+h2 { font-size: 19px; margin: 0 0 14px; }
+p { color: var(--muted); }
+main { max-width: 1440px; margin: auto; padding: 24px; }
+.section { margin-bottom: 32px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+  gap: 20px;
+}
+.card {
+  min-width: 0;
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background: white;
+}
+a { color: var(--accent); }
+button {
+  background: #173b5b;
+  color: white;
+  border: 1px solid #37658b;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+.note { font-size: 13px; color: var(--muted); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+th { color: var(--accent); }
+.table-wrap { overflow-x: auto; }
+.status { color: #83e1ae; }
+@media(max-width:600px) {
+  main { padding: 14px; }
+  header { padding: 22px 16px; }
+  .card { padding: 12px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Predictive Relay Deployment</h1>
+  <p>Simulation results dashboard · Scripts 32, 35 and 36</p>
+  <button onclick="refreshDashboard()">Refresh visuals</button>
+  <span id="status" class="note"> Loading results…</span>
+</header>
+<main>
+  <section class="section">
+    <h2>Script 32 — Policy performance</h2>
+    <p>Outage, connectivity at crossing, availability and dispatch trade-offs.</p>
+    <div class="grid" id="script32"></div>
+  </section>
+  <section class="section">
+    <h2>Script 35 — Placement strategy comparison</h2>
+    <p>Compare current placement and movement-aware placement outcomes.</p>
+    <div class="grid" id="script35"></div>
+  </section>
+  <section class="section">
+    <h2>Script 36 — Adaptive policy performance</h2>
+    <p>Outage and crossing connectivity under adaptive policies.</p>
+    <div class="grid" id="script36"></div>
+  </section>
+  <section class="section">
+    <div class="card">
+      <h2>Combined simulation summary</h2>
+      <p class="note">Rows from the exporter’s combined CSV. These are simulation results, not live robot telemetry.</p>
+      <div id="summary" class="table-wrap">Loading CSV…</div>
+      <p><a href="data/dashboard_combined_summary.csv" target="_blank">Open combined summary CSV</a></p>
+    </div>
+  </section>
+  <p class="note">To update the charts after a simulation, run <code>python .\relay_results_dashboard.py</code> from your project root, then refresh this page.</p>
+</main>
+<script>
+const charts = {
+  script32: [
+    ["01_script32_outage_by_policy.png", "Simulated outage by policy"],
+    ["02_script32_crossing_connectivity.png", "Connectivity at crossing"],
+    ["03_script32_connectivity_availability.png", "Connectivity availability"],
+    ["04_script32_dispatch_count.png", "Dispatch count"],
+    ["05_script32_dispatch_vs_outage.png", "Dispatches versus outage"]
+  ],
+  script35: [
+    ["06_script35_placement_outage.png", "Placement strategy — outage"],
+    ["07_script35_placement_connectivity.png", "Placement strategy — connectivity"]
+  ],
+  script36: [
+    ["08_script36_adaptive_outage.png", "Adaptive policy — outage"],
+    ["09_script36_adaptive_connectivity.png", "Adaptive policy — connectivity"]
+  ]
+};
+
+function renderCharts() {
+  for (const [group, items] of Object.entries(charts)) {
+    const target = document.getElementById(group);
+    target.innerHTML = "";
+    for (const [file, title] of items) {
+      const card = document.createElement("article");
+      card.className = "card";
+      const heading = document.createElement("h2");
+      heading.textContent = title;
+      const img = document.createElement("img");
+      img.alt = title;
+      img.loading = "lazy";
+      img.src = "data/" + file + "?v=" + Date.now();
+      img.onerror = () => {
+        img.alt = "Chart could not be loaded: " + file;
+        card.insertAdjacentHTML("beforeend",
+          '<p class="note">Image unavailable. Rerun the exporter and verify the file path.</p>');
+      };
+      card.append(heading, img);
+      target.append(card);
+    }
+  }
+}
+
+async function renderSummary() {
+  const target = document.getElementById("summary");
+  try {
+    const response = await fetch("data/dashboard_combined_summary.csv?v=" + Date.now());
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const csv = await response.text();
+    const rows = csv.trim().split(/\r?\n/).map(line => {
+      const fields = [];
+      let field = "", quoted = false;
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"' && quoted && line[i + 1] === '"') {
+          field += '"'; i++;
+        } else if (c === '"') quoted = !quoted;
+        else if (c === "," && !quoted) {
+          fields.push(field); field = "";
+        } else field += c;
+      }
+      fields.push(field);
+      return fields;
+    });
+    if (rows.length < 2) throw new Error("CSV has no data rows");
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const header = document.createElement("tr");
+    rows[0].forEach(value => {
+      const th = document.createElement("th");
+      th.textContent = value;
+      header.append(th);
+    });
+    thead.append(header);
+    const tbody = document.createElement("tbody");
+    rows.slice(1, 101).forEach(row => {
+      const tr = document.createElement("tr");
+      rows[0].forEach((_, i) => {
+        const td = document.createElement("td");
+        td.textContent = row[i] ?? "";
+        tr.append(td);
+      });
+      tbody.append(tr);
+    });
+    table.append(thead, tbody);
+    target.replaceChildren(table);
+    if (rows.length > 101) {
+      const note = document.createElement("p");
+      note.className = "note";
+      note.textContent = "Showing the first 100 data rows of " + (rows.length - 1) + ". Open the CSV for all rows.";
+      target.append(note);
+    }
+  } catch (error) {
+    target.textContent = "Could not load the summary CSV: " + error.message;
+  }
+}
+
+async function refreshDashboard() {
+  document.getElementById("status").textContent = "Refreshing…";
+  renderCharts();
+  await renderSummary();
+  document.getElementById("status").textContent =
+    "Visuals refreshed · " + new Date().toLocaleString();
+}
+refreshDashboard();
+</script>
+</body>
+</html>
