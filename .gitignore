@@ -5,3 +5,9 @@
 /data/processed/future_risk_labels_with_trends.csv
 /data/processed/script25/dispatch_training_data.csv
 /data/processed/script26/dispatch_oof_predictions.csv
+
+# Python virtual environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
