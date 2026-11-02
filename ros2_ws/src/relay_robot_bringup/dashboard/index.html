@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>RelayOps | Predictive Relay Intelligence</title>
+
+<style>
+:root {
+    --bg: #080d18;
+    --panel: #121d30;
+    --panel2: #0b1526;
+    --border: #293953;
+    --text: #edf4ff;
+    --muted: #91a3bd;
+    --cyan: #55d9f5;
+    --green: #45d6a0;
+    --amber: #ffc064;
+    --red: #ff7182;
+    --purple: #b69aff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 25px;
+    background: radial-gradient(ellipse at top right, #203653, transparent 45%), var(--bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
+}
+
+.container {
+    max-width: 1450px;
+    margin: auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--cyan), #637bff);
+    color: #07111e;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.eyebrow {
+    color: var(--cyan);
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 25px;
+    margin: 5px 0;
+}
+
+.pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.pill {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 9px 13px;
+    border-radius: 30px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--amber);
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.panel {
+    background: linear-gradient(145deg, #152137, #101827);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    min-width: 0;
+}
+
+.hero {
+    display: grid;
+    grid-template-columns: 1.5fr 0.8fr;
+    gap: 16px;
+}
+
+.hero h2 {
+    margin-bottom: 8px;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.hero-status {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.status {
+    font-size: 30px;
+    font-weight: 900;
+    margin: 8px 0;
+    color: var(--amber);
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin: 30px 2px 13px;
+    flex-wrap: wrap;
+}
+
+.section-title h2 {
+    font-size: 13px;
+    letter-spacing: 1.5px;
+}
+
+.section-title span {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+/* TELEMETRY */
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.metric {
+    min-height: 135px;
+}
+
+.metric label {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.metric-value {
+    font-size: 26px;
+    font-weight: 850;
+    margin: 15px 0 5px;
+    overflow-wrap: anywhere;
+}
+
+.metric small {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+/* RSSI SIGNAL PANEL */
+
+.signal-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.signal-value {
+    font-size: 38px;
+    font-weight: 900;
+    margin: 12px 0 4px;
+}
+
+.signal-bar {
+    width: 100%;
+    height: 13px;
+    background: #263750;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 18px 0 10px;
+}
+
+.signal-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 20px;
+    background: var(--green);
+    transition: width .4s ease, background .4s ease;
+}
+
+.signal-labels {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.signal-description {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 12px;
+}
+
+.trend-value {
+    font-size: 30px;
+    font-weight: 850;
+    margin: 15px 0 5px;
+}
+
+/* CHARTS */
+
+.charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.chart-panel {
+    min-height: 310px;
+}
+
+.chart-panel h3 {
+    margin-top: 0;
+}
+
+.chart-subtitle {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 225px;
+}
+
+/* RELAY PLANNER */
+
+.planner {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 16px;
+}
+
+.inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 17px;
+    margin-top: 20px;
+}
+
+.field label {
+    display: block;
+    font-size: 11px;
+    color: #b7c5da;
+    margin-bottom: 7px;
+}
+
+.field input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--panel2);
+    color: white;
+    font-size: 15px;
+}
+
+.field small {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 6px;
+}
+
+.calculations {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.calc-card {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px;
+    min-width: 0;
+}
+
+.calc-card small {
+    display: block;
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.calc-card strong {
+    display: block;
+    margin-top: 8px;
+    font-size: 18px;
+    overflow-wrap: anywhere;
+}
+
+/* DEPLOYMENT */
+
+.decision-banner {
+    padding: 20px;
+    border-radius: 12px;
+    background: #252b38;
+    border: 1px solid #3a465c;
+    margin: 18px 0;
+}
+
+.decision-banner strong {
+    font-size: 21px;
+}
+
+.decision-banner p {
+    font-size: 12px;
+    color: #c2cadd;
+}
+
+.progress {
+    height: 10px;
+    background: #293953;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 12px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--green), var(--amber), var(--red));
+    transition: width .3s ease;
+}
+
+.deployment-info {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 14px;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    color: #71839e;
+    font-size: 10px;
+    margin: 25px 2px 5px;
+}
+
+@media(max-width: 1100px) {
+    .metrics {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .planner {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 760px) {
+    body {
+        padding: 15px;
+    }
+
+    .hero,
+    .signal-panel,
+    .charts {
+        grid-template-columns: 1fr;
+    }
+
+    .metrics {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 480px) {
+    .metrics,
+    .inputs {
+        grid-template-columns: 1fr;
+    }
+
+    .calculations {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="container">
+
+<header>
+    <div class="brand">
+        <div class="logo">R</div>
+        <div>
+            <div class="eyebrow">AUTONOMOUS SYSTEMS · MISSION CONTROL</div>
+            <h1>RelayOps / Predictive Relay Intelligence</h1>
+        </div>
+    </div>
+
+    <div class="pills">
+        <div class="pill">
+            <span class="dot" id="connectionDot"></span>
+            <span id="connection">Connecting to ROS 2...</span>
+        </div>
+        <div class="pill" id="clock">--:--:--</div>
+        <div class="pill">SIMULATION MODE</div>
+    </div>
+</header>
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="panel">
+        <span class="eyebrow">LIVE TELEMETRY STREAM</span>
+        <h2>Communication-aware exploration</h2>
+        <p class="muted">
+            Monitor explorer position, wireless signal quality,
+            communication deterioration and relay deployment feasibility.
+        </p>
+    </div>
+
+    <div class="panel hero-status">
+        <small class="muted">CURRENT COMMUNICATION STATE</small>
+        <div class="status" id="heroRisk">WAITING</div>
+        <small class="muted" id="heroSub">
+            Waiting for ROS 2 telemetry
+        </small>
+    </div>
+
+</section>
+
+<!-- TELEMETRY -->
+
+<div class="section-title">
+    <h2>LIVE MISSION TELEMETRY</h2>
+    <span>Latest ROS 2 measurements</span>
+</div>
+
+<section class="metrics">
+
+    <div class="panel metric">
+        <label>EXPLORER POSITION</label>
+        <div class="metric-value" id="position">—</div>
+        <small>X / Y coordinates · metres</small>
+    </div>
+
+    <div class="panel metric">
+        <label>RSSI SIGNAL STRENGTH</label>
+        <div class="metric-value" id="rssi">—</div>
+        <small>Received signal · dBm</small>
+    </div>
+
+    <div class="panel metric">
+        <label>SIGNAL TREND</label>
+        <div class="metric-value" id="gradient">—</div>
+        <small>RSSI change · dB/s</small>
+    </div>
+
+    <div class="panel metric">
+        <label>PREDICTED WARNING LEAD</label>
+        <div class="metric-value" id="warning">—</div>
+        <small>Time remaining · seconds</small>
+    </div>
+
+    <div class="panel metric">
+        <label>RELAY READINESS</label>
+        <div class="metric-value" id="readinessMetric">20.0 s</div>
+        <small>Calculated preparation time</small>
+    </div>
+
+</section>
+
+<!-- SIGNAL INTELLIGENCE -->
+
+<div class="section-title">
+    <h2>SIGNAL INTELLIGENCE</h2>
+    <span>Live communication monitoring</span>
+</div>
+
+<section class="signal-panel">
+
+    <div class="panel">
+        <h3>Wireless signal quality</h3>
+
+        <div class="signal-value" id="signalBig">— dBm</div>
+
+        <div class="signal-bar">
+            <div class="signal-fill" id="signalFill"></div>
+        </div>
+
+        <div class="signal-labels">
+            <span>Weak</span>
+            <span>Moderate</span>
+            <span>Strong</span>
+        </div>
+
+        <div class="signal-description" id="signalDescription">
+            Waiting for a valid RSSI reading.
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>Signal deterioration analysis</h3>
+
+        <div class="trend-value" id="trendBig">—</div>
+
+        <div class="signal-description" id="trendDescription">
+            Waiting for consecutive signal measurements.
+        </div>
+
+        <div style="margin-top:25px">
+            <small class="muted">PREDICTED TIME TO COMMUNICATION RISK</small>
+            <div class="metric-value" id="riskTime">—</div>
+        </div>
+    </div>
+
+</section>
+
+<!-- CHARTS -->
+
+<div class="section-title">
+    <h2>DYNAMIC SIGNAL GRAPHS</h2>
+    <span>Latest 60 valid samples</span>
+</div>
+
+<section class="charts">
+
+    <div class="panel chart-panel">
+        <h3>RSSI history</h3>
+        <p class="chart-subtitle">
+            Wireless signal strength over time · dBm
+        </p>
+        <canvas id="rssiChart"></canvas>
+    </div>
+
+    <div class="panel chart-panel">
+        <h3>Predicted warning lead</h3>
+        <p class="chart-subtitle">
+            Time remaining before predicted communication risk · seconds
+        </p>
+        <canvas id="leadChart"></canvas>
+    </div>
+
+</section>
+
+<!-- RELAY PLANNER -->
+
+<div class="section-title">
+    <h2>RELAY DEPLOYMENT PLANNER</h2>
+    <span>Change scenario inputs to recalculate readiness</span>
+</div>
+
+<section class="planner">
+
+    <div class="panel">
+        <h3>Scenario inputs</h3>
+
+        <p class="muted" style="font-size:11px">
+            Relay preparation assumptions
+        </p>
+
+        <div class="inputs">
+
+            <div class="field">
+                <label>Relay travel distance (m)</label>
+                <input id="distance" type="number" min="0" value="10">
+                <small>Distance to proposed relay point</small>
+            </div>
+
+            <div class="field">
+                <label>Relay speed (m/s)</label>
+                <input id="speed" type="number" min="0.01" value="1">
+                <small>Expected relay movement speed</small>
+            </div>
+
+            <div class="field">
+                <label>Setup time (s)</label>
+                <input id="setup" type="number" min="0" value="5">
+                <small>Positioning and initialisation</small>
+            </div>
+
+            <div class="field">
+                <label>Reconnection delay (s)</label>
+                <input id="reconnect" type="number" min="0" value="3">
+                <small>Restore communication path</small>
+            </div>
+
+            <div class="field">
+                <label>Safety margin (s)</label>
+                <input id="safety" type="number" min="0" value="2">
+                <small>Additional time buffer</small>
+            </div>
+
+        </div>
+
+        <div class="calculations">
+
+            <div class="calc-card">
+                <small>TRAVEL TIME</small>
+                <strong id="travelTime">10.0 s</strong>
+            </div>
+
+            <div class="calc-card">
+                <small>TOTAL READY TIME</small>
+                <strong id="totalTime">20.0 s</strong>
+            </div>
+
+            <div class="calc-card">
+                <small>TIME MARGIN</small>
+                <strong id="margin">—</strong>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="panel">
+
+        <h3>Deployment feasibility</h3>
+
+        <p class="muted" style="font-size:11px">
+            Predicted warning lead versus relay readiness
+        </p>
+
+        <div class="decision-banner" id="banner">
+            <strong id="decision">WAITING FOR TELEMETRY</strong>
+            <p id="recommendation">
+                Waiting for predicted warning lead from ROS 2.
+            </p>
+        </div>
+
+        <div class="deployment-info">
+            <span>Readiness required</span>
+            <b id="barLabel">20.0 s</b>
+        </div>
+
+        <div class="progress">
+            <div class="progress-fill" id="fill"></div>
+        </div>
+
+        <div class="deployment-info">
+            <span>Predicted warning lead</span>
+            <b id="leadLabel">Waiting</b>
+        </div>
+
+        <p class="muted" style="font-size:11px;margin-top:20px">
+            T_ready = distance ÷ speed + setup + reconnection + safety margin.
+        </p>
+
+    </div>
+
+</section>
+
+<footer>
+    <span>RelayOps · Predictive Wireless Relay Deployment</span>
+    <span>Simulation data is not proof of real-world wireless performance.</span>
+</footer>
+
+</main>
+
+<script>
+
+// --------------------------------------------------
+// GLOBAL DATA
+// --------------------------------------------------
+
+const $ = id => document.getElementById(id);
+
+let leadNow = null;
+
+const historyData = {
+    rssi: [],
+    lead: []
+};
+
+let previousRssi = null;
+
+// --------------------------------------------------
+// HELPERS
+// --------------------------------------------------
+
+function number(value) {
+    if (value === null || value === undefined || value === "") {
+        return null;
+    }
+
+    const result = Number(value);
+
+    return Number.isFinite(result) ? result : null;
+}
+
+function format(value, decimals = 1) {
+    return value === null
+        ? "—"
+        : value.toFixed(decimals);
+}
+
+function addSample(array, value) {
+    if (value === null) return;
+
+    array.push(value);
+
+    if (array.length > 60) {
+        array.shift();
+    }
+}
+
+// --------------------------------------------------
+// PARSE RISK MESSAGE
+// --------------------------------------------------
+
+function parseRisk(value) {
+
+    if (value && typeof value === "object") {
+        return value;
+    }
+
+    if (typeof value === "string") {
+
+        try {
+            return JSON.parse(value);
+        } catch (error) {
+            return { RISK_STATUS: value };
+        }
+    }
+
+    return {};
+}
+
+// --------------------------------------------------
+// SIGNAL QUALITY
+// --------------------------------------------------
+
+function updateSignal(rssi) {
+
+    if (rssi === null) {
+
+        $("signalBig").textContent = "INVALID";
+
+        $("signalDescription").textContent =
+            "No valid RSSI reading available. Check the telemetry publisher.";
+
+        $("signalFill").style.width = "0%";
+
+        $("signalFill").style.background = "var(--red)";
+
+        $("rssi").textContent = "INVALID";
+
+        return;
+    }
+
+    $("signalBig").textContent = rssi.toFixed(1) + " dBm";
+
+    $("rssi").textContent = rssi.toFixed(1) + " dBm";
+
+    /*
+       Illustrative display scale:
+       -100 dBm = weak
+       -50 dBm  = strong
+
+       This is a visual scale, not a validated
+       communication-failure threshold.
+    */
+
+    const percentage = Math.max(
+        0,
+        Math.min(100, ((rssi + 100) / 50) * 100)
+    );
+
+    $("signalFill").style.width = percentage + "%";
+
+    let description;
+    let color;
+
+    if (rssi >= -60) {
+        description = "Strong signal";
+        color = "var(--green)";
+    } else if (rssi >= -75) {
+        description = "Moderate signal";
+        color = "var(--amber)";
+    } else {
+        description = "Weak signal";
+        color = "var(--red)";
+    }
+
+    $("signalFill").style.background = color;
+
+    $("signalDescription").textContent = description;
+}
+
+// --------------------------------------------------
+// SIGNAL TREND
+// --------------------------------------------------
+
+function updateTrend(gradient) {
+
+    if (gradient === null) {
+
+        $("trendBig").textContent = "—";
+
+        $("gradient").textContent = "—";
+
+        $("trendDescription").textContent =
+            "Waiting for signal-gradient data.";
+
+        return;
+    }
+
+    $("trendBig").textContent =
+        gradient.toFixed(2) + " dB/s";
+
+    $("gradient").textContent =
+        gradient.toFixed(2) + " dB/s";
+
+    if (gradient < -0.1) {
+
+        $("trendDescription").textContent =
+            "Signal is deteriorating.";
+
+        $("trendBig").style.color = "var(--red)";
+
+    } else if (gradient > 0.1) {
+
+        $("trendDescription").textContent =
+            "Signal is improving.";
+
+        $("trendBig").style.color = "var(--green)";
+
+    } else {
+
+        $("trendDescription").textContent =
+            "Signal is relatively stable.";
+
+        $("trendBig").style.color = "var(--cyan)";
+    }
+}
+
+// --------------------------------------------------
+// RELAY READINESS CALCULATION
+// --------------------------------------------------
+
+function calculateReadiness() {
+
+    const distance = number($("distance").value);
+    const speed = number($("speed").value);
+    const setup = number($("setup").value);
+    const reconnect = number($("reconnect").value);
+    const safety = number($("safety").value);
+
+    const values = [distance, speed, setup, reconnect, safety];
+
+    if (
+        values.some(v => v === null || v < 0) ||
+        speed <= 0
+    ) {
+
+        $("travelTime").textContent = "Invalid";
+        $("totalTime").textContent = "—";
+        $("readinessMetric").textContent = "—";
+
+        return;
+    }
+
+    const travel = distance / speed;
+
+    const ready = travel + setup + reconnect + safety;
+
+    const margin = leadNow === null
+        ? null
+        : leadNow - ready;
+
+    $("travelTime").textContent =
+        travel.toFixed(1) + " s";
+
+    $("totalTime").textContent =
+        ready.toFixed(1) + " s";
+
+    $("readinessMetric").textContent =
+        ready.toFixed(1) + " s";
+
+    $("margin").textContent =
+        margin === null
+            ? "—"
+            : (margin >= 0 ? "+" : "") +
+              margin.toFixed(1) + " s";
+
+    $("barLabel").textContent =
+        ready.toFixed(1) + " s";
+
+    $("leadLabel").textContent =
+        leadNow === null
+            ? "Waiting"
+            : leadNow.toFixed(1) + " s";
+
+    const fill = $("fill");
+
+    fill.style.width =
+        leadNow === null
+            ? "0%"
+            : Math.min(
+                100,
+                Math.max(0, leadNow / Math.max(ready, 0.01) * 100)
+            ) + "%";
+
+    const banner = $("banner");
+
+    if (leadNow === null) {
+
+        $("decision").textContent = "WAITING FOR TELEMETRY";
+
+        $("recommendation").textContent =
+            "Waiting for predicted warning lead.";
+
+        banner.style.background = "#252b38";
+
+    } else if (leadNow <= 0) {
+
+        $("decision").textContent = "TOO LATE";
+
+        $("recommendation").textContent =
+            "Predicted risk time has arrived.";
+
+        banner.style.background = "#3b2029";
+
+    } else if (margin >= 0) {
+
+        $("decision").textContent = "DEPLOYMENT FEASIBLE";
+
+        $("recommendation").textContent =
+            "Enough warning time is available for relay preparation.";
+
+        banner.style.background = "#17372f";
+
+    } else {
+
+        $("decision").textContent = "DEPLOYMENT AT RISK";
+
+        $("recommendation").textContent =
+            "Warning lead is shorter than the required relay readiness time.";
+
+        banner.style.background = "#3b2d1b";
+    }
+}
+
+// --------------------------------------------------
+// DRAW DYNAMIC CHART
+// --------------------------------------------------
+
+function drawChart(id, values, color, guide = null) {
+
+    const canvas = $(id);
+
+    const ctx = canvas.getContext("2d");
+
+    const width = canvas.clientWidth;
+
+    const height = 225;
+
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = width * dpr;
+
+    canvas.height = height * dpr;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    ctx.clearRect(0, 0, width, height);
+
+    const left = 42;
+    const right = 15;
+    const top = 15;
+    const bottom = 28;
+
+    if (values.length === 0) {
+
+        ctx.fillStyle = "#91a3bd";
+
+        ctx.font = "13px Arial";
+
+        ctx.fillText(
+            "Waiting for live samples...",
+            35,
+            110
+        );
+
+        return;
+    }
+
+    let min = Math.min(...values);
+
+    let max = Math.max(...values);
+
+    if (guide !== null) {
+        min = Math.min(min, guide);
+        max = Math.max(max, guide);
+    }
+
+    if (max - min < 5) {
+        max += 3;
+        min -= 3;
+    }
+
+    const x = i =>
+        left + (width - left - right) *
+        (values.length <= 1 ? 1 : i / 59);
+
+    const y = v =>
+        top + (height - top - bottom) *
+        (max - v) / (max - min);
+
+    ctx.font = "10px Arial";
+
+    ctx.fillStyle = "#91a3bd";
+
+    ctx.strokeStyle = "#293953";
+
+    for (let i = 0; i <= 4; i++) {
+
+        const value = min + (max - min) * i / 4;
+
+        const position = y(value);
+
+        ctx.beginPath();
+
+        ctx.moveTo(left, position);
+
+        ctx.lineTo(width - right, position);
+
+        ctx.stroke();
+
+        ctx.fillText(
+            value.toFixed(0),
+            3,
+            position + 3
+        );
+    }
+
+    if (guide !== null) {
+
+        ctx.save();
+
+        ctx.setLineDash([5, 5]);
+
+        ctx.strokeStyle = "#ff7182";
+
+        ctx.beginPath();
+
+        ctx.moveTo(left, y(guide));
+
+        ctx.lineTo(width - right, y(guide));
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    ctx.beginPath();
+
+    values.forEach((value, i) => {
+
+        if (i === 0) {
+            ctx.moveTo(x(i), y(value));
+        } else {
+            ctx.lineTo(x(i), y(value));
+        }
+
+    });
+
+    ctx.strokeStyle = color;
+
+    ctx.lineWidth = 2.5;
+
+    ctx.lineJoin = "round";
+
+    ctx.stroke();
+
+    ctx.fillStyle = color;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x(values.length - 1),
+        y(values[values.length - 1]),
+        4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle = "#91a3bd";
+
+    ctx.fillText("Oldest", left, height - 5);
+
+    ctx.fillText("Latest", width - 48, height - 5);
+}
+
+// --------------------------------------------------
+// REFRESH GRAPHS
+// --------------------------------------------------
+
+function redrawCharts() {
+
+    drawChart(
+        "rssiChart",
+        historyData.rssi,
+        "#55d9f5",
+        -70
+    );
+
+    drawChart(
+        "leadChart",
+        historyData.lead,
+        "#b69aff"
+    );
+}
+
+// --------------------------------------------------
+// RECEIVE ROS 2 DATA
+// --------------------------------------------------
+
+async function refreshDashboard() {
+
+    try {
+
+        const response = await fetch("/data", {
+            cache: "no-store"
+        });
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        $("connection").textContent =
+            "ROS 2 stream connected";
+
+        $("connectionDot").style.background =
+            "var(--green)";
+
+        const x = number(data.robot_x_m);
+
+        const y = number(data.robot_y_m);
+
+        const rawRssi = number(data.rssi_dbm);
+
+        const gradient = number(data.rssi_gradient_dbps);
+
+        leadNow = number(data.estimated_time_to_risk_s);
+
+        /*
+          A plausible RSSI validation range for this
+          display is -120 to 0 dBm.
+
+          Invalid readings are shown as INVALID,
+          not silently replaced with fabricated values.
+        */
+
+        const validRssi =
+            rawRssi !== null &&
+            rawRssi >= -120 &&
+            rawRssi <= 0;
+
+        const rssi = validRssi ? rawRssi : null;
+
+        // Position
+        $("position").textContent =
+            x === null || y === null
+                ? "—"
+                : x.toFixed(2) + " / " +
+                  y.toFixed(2) + " m";
+
+        // Signal
+        updateSignal(rssi);
+
+        // Signal trend
+        updateTrend(gradient);
+
+        // Warning lead
+        $("warning").textContent =
+            leadNow === null
+                ? "—"
+                : leadNow.toFixed(1) + " s";
+
+        $("riskTime").textContent =
+            leadNow === null
+                ? "—"
+                : leadNow.toFixed(1) + " seconds";
+
+        // Risk state may be a plain string or JSON object.
+        let riskData = parseRisk(
+            data.risk_level ??
+            data.risk_status ??
+            data.communication_risk
+        );
+
+        const rawStatus =
+            riskData.RISK_STATUS ??
+            riskData.risk_status ??
+            riskData.risk_level ??
+            riskData.status ??
+            "WAITING";
+
+        const risk = String(rawStatus).toUpperCase().trim();
+
+        const validStates = [
+            "NORMAL",
+            "WARNING",
+            "CRITICAL"
+        ];
+
+        const status = validStates.includes(risk)
+            ? risk
+            : "WAITING";
+
+        $("heroRisk").textContent = status;
+
+        $("heroRisk").style.color =
+            status === "CRITICAL"
+                ? "var(--red)"
+                : status === "WARNING"
+                    ? "var(--amber)"
+                    : status === "NORMAL"
+                        ? "var(--green)"
+                        : "var(--muted)";
+
+        $("heroSub").textContent =
+            status === "WAITING"
+                ? "Waiting for a recognized communication-risk status."
+                : "Communication state received from ROS 2.";
+
+        // Record valid live samples
+        addSample(historyData.rssi, rssi);
+
+        addSample(historyData.lead, leadNow);
+
+        // Update relay calculation
+        calculateReadiness();
+
+        // Update charts
+        redrawCharts();
+
+    } catch (error) {
+
+        $("connection").textContent =
+            "Waiting for dashboard data";
+
+        $("connectionDot").style.background =
+            "var(--amber)";
+
+        console.error(
+            "Dashboard connection error:",
+            error
+        );
+    }
+}
+
+// --------------------------------------------------
+// INPUT EVENTS
+// --------------------------------------------------
+
+[
+    "distance",
+    "speed",
+    "setup",
+    "reconnect",
+    "safety"
+].forEach(id => {
+
+    $(id).addEventListener(
+        "input",
+        calculateReadiness
+    );
+
+});
+
+// --------------------------------------------------
+// CLOCK AND INITIALISATION
+// --------------------------------------------------
+
+function updateClock() {
+
+    $("clock").textContent =
+        new Date().toLocaleTimeString();
+
+}
+
+window.addEventListener("resize", redrawCharts);
+
+updateClock();
+
+calculateReadiness();
+
+refreshDashboard();
+
+setInterval(updateClock, 1000);
+
+setInterval(refreshDashboard, 1000);
+
+</script>
+
+</body>
+</html>
