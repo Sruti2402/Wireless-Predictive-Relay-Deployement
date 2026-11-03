@@ -1,0 +1,58 @@
+{
+  "model_type": "two_stage_signal_crossing_prediction",
+  "prediction_horizon_seconds": 120.0,
+  "features": [
+    "signal_quality",
+    "signal_quality_smooth",
+    "signal_5s_change",
+    "signal_5s_decline",
+    "speed_mps",
+    "distance_from_base",
+    "UL_level",
+    "UR_level",
+    "LL_level",
+    "LR_level",
+    "C_level",
+    "signal_threshold",
+    "relay_speed_mps",
+    "setup_time_sec",
+    "reconnect_time_sec",
+    "dispatch_distance_m",
+    "travel_time_sec",
+    "deployment_time_sec",
+    "safety_margin_sec"
+  ],
+  "classifier": {
+    "file": "crossing_classifier.joblib",
+    "algorithm": "HistGradientBoostingClassifier",
+    "max_iter": 150,
+    "learning_rate": 0.08,
+    "max_leaf_nodes": 15,
+    "l2_regularization": 1.0,
+    "random_state": 42
+  },
+  "regressor": {
+    "file": "crossing_time_regressor.joblib",
+    "algorithm": "HistGradientBoostingRegressor",
+    "max_iter": 150,
+    "learning_rate": 0.08,
+    "max_leaf_nodes": 15,
+    "l2_regularization": 1.0,
+    "random_state": 42
+  },
+  "training": {
+    "source": "data/processed/script25/dispatch_training_data.csv",
+    "recordings": [
+      "Dataset1",
+      "Dataset2",
+      "Dataset3",
+      "Dataset4",
+      "Dataset5"
+    ],
+    "classifier_rows": 150000,
+    "regression_rows": 114603,
+    "per_recording_cap": 30000
+  },
+  "validation_note": "Deployment models fitted on all eligible recordings. Performance must be reported from the separate leave-one-recording-out evaluation, not training fit.",
+  "target_limitation": "Predicts observed low-signal threshold crossings, not verified real-world communication outages."
+}
